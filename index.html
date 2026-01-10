@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Exercices mBot - Programmation avec mBlock</title>
+    <title>mBlock Training Platform - mBot Exercises</title>
     <style>
         * {
             margin: 0;
@@ -12,77 +12,122 @@
         }
 
         body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            background: #0a0e27;
+            color: #e4e4e7;
             min-height: 100vh;
-            padding: 20px;
+            line-height: 1.6;
         }
 
         .container {
-            max-width: 1200px;
+            max-width: 1400px;
             margin: 0 auto;
+            padding: 0 20px;
         }
 
         header {
-            text-align: center;
-            color: white;
-            padding: 40px 20px;
-            margin-bottom: 30px;
+            background: linear-gradient(180deg, rgba(10,14,39,0.95) 0%, rgba(10,14,39,0.8) 100%);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid rgba(56, 189, 248, 0.2);
+            padding: 30px 0;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-size: 1.5em;
+            font-weight: 700;
+            letter-spacing: -0.5px;
+        }
+
+        .logo span {
+            color: #38bdf8;
+        }
+
+        .stats {
+            display: flex;
+            gap: 30px;
+            font-size: 0.9em;
+        }
+
+        .stat-item {
+            color: #a1a1aa;
+        }
+
+        .stat-item span {
+            color: #38bdf8;
+            font-weight: 600;
+        }
+
+        .hero {
+            padding: 60px 0 40px 0;
         }
 
         h1 {
-            font-size: 3em;
-            margin-bottom: 10px;
-            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+            font-size: 2.5em;
+            font-weight: 700;
+            margin-bottom: 15px;
+            letter-spacing: -1px;
         }
 
         .subtitle {
-            font-size: 1.2em;
-            opacity: 0.9;
+            font-size: 1.1em;
+            color: #a1a1aa;
+            margin-bottom: 40px;
         }
 
         .filters {
             display: flex;
-            justify-content: center;
-            gap: 15px;
-            margin-bottom: 30px;
-            flex-wrap: wrap;
+            gap: 10px;
+            margin-bottom: 40px;
+            background: rgba(24, 24, 27, 0.6);
+            padding: 8px;
+            border-radius: 12px;
+            border: 1px solid rgba(63, 63, 70, 0.4);
+            width: fit-content;
         }
 
         .filter-btn {
-            padding: 12px 25px;
+            padding: 10px 24px;
             border: none;
-            border-radius: 25px;
-            background: white;
-            color: #667eea;
-            font-weight: bold;
+            border-radius: 8px;
+            background: transparent;
+            color: #a1a1aa;
+            font-weight: 500;
             cursor: pointer;
-            transition: all 0.3s ease;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            transition: all 0.2s ease;
+            font-size: 0.95em;
         }
 
         .filter-btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 6px 12px rgba(0,0,0,0.2);
+            color: #e4e4e7;
+            background: rgba(63, 63, 70, 0.4);
         }
 
         .filter-btn.active {
-            background: #764ba2;
-            color: white;
+            background: #38bdf8;
+            color: #0a0e27;
         }
 
         .exercises-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
-            gap: 25px;
-            margin-bottom: 40px;
+            grid-template-columns: repeat(auto-fill, minmax(380px, 1fr));
+            gap: 20px;
+            margin-bottom: 60px;
         }
 
         .exercise-card {
-            background: white;
-            border-radius: 15px;
-            padding: 25px;
-            box-shadow: 0 8px 16px rgba(0,0,0,0.1);
+            background: rgba(24, 24, 27, 0.6);
+            border: 1px solid rgba(63, 63, 70, 0.4);
+            border-radius: 12px;
+            padding: 24px;
             transition: all 0.3s ease;
             cursor: pointer;
             position: relative;
@@ -94,68 +139,75 @@
             position: absolute;
             top: 0;
             left: 0;
-            width: 5px;
+            width: 3px;
             height: 100%;
-            background: linear-gradient(180deg, #667eea 0%, #764ba2 100%);
+            background: #38bdf8;
+            opacity: 0;
+            transition: opacity 0.3s ease;
         }
 
         .exercise-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 12px 24px rgba(0,0,0,0.2);
+            border-color: rgba(56, 189, 248, 0.5);
+            background: rgba(24, 24, 27, 0.8);
+            transform: translateY(-2px);
+        }
+
+        .exercise-card:hover::before {
+            opacity: 1;
         }
 
         .exercise-header {
             display: flex;
             justify-content: space-between;
-            align-items: start;
-            margin-bottom: 15px;
+            align-items: center;
+            margin-bottom: 16px;
         }
 
         .exercise-number {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-            width: 40px;
-            height: 40px;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-weight: bold;
-            font-size: 1.1em;
+            font-size: 0.85em;
+            color: #38bdf8;
+            font-weight: 600;
+            font-family: 'Courier New', monospace;
         }
 
         .difficulty {
-            padding: 6px 15px;
-            border-radius: 20px;
-            font-size: 0.85em;
-            font-weight: bold;
+            padding: 4px 12px;
+            border-radius: 6px;
+            font-size: 0.8em;
+            font-weight: 500;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
         }
 
         .difficulty.debutant {
-            background: #d4edda;
-            color: #155724;
+            background: rgba(34, 197, 94, 0.15);
+            color: #4ade80;
+            border: 1px solid rgba(34, 197, 94, 0.3);
         }
 
         .difficulty.intermediaire {
-            background: #fff3cd;
-            color: #856404;
+            background: rgba(251, 191, 36, 0.15);
+            color: #fbbf24;
+            border: 1px solid rgba(251, 191, 36, 0.3);
         }
 
         .difficulty.avance {
-            background: #f8d7da;
-            color: #721c24;
+            background: rgba(239, 68, 68, 0.15);
+            color: #f87171;
+            border: 1px solid rgba(239, 68, 68, 0.3);
         }
 
         .exercise-title {
-            font-size: 1.3em;
-            margin: 15px 0 10px 0;
-            color: #333;
+            font-size: 1.25em;
+            margin-bottom: 12px;
+            color: #f4f4f5;
+            font-weight: 600;
         }
 
         .exercise-description {
-            color: #666;
-            line-height: 1.6;
-            margin-bottom: 15px;
+            color: #a1a1aa;
+            margin-bottom: 16px;
+            font-size: 0.95em;
         }
 
         .exercise-tags {
@@ -165,11 +217,12 @@
         }
 
         .tag {
-            background: #f0f0f0;
-            padding: 5px 12px;
-            border-radius: 15px;
-            font-size: 0.85em;
-            color: #555;
+            background: rgba(63, 63, 70, 0.5);
+            padding: 4px 10px;
+            border-radius: 4px;
+            font-size: 0.8em;
+            color: #d4d4d8;
+            border: 1px solid rgba(82, 82, 91, 0.3);
         }
 
         .modal {
@@ -179,7 +232,8 @@
             left: 0;
             width: 100%;
             height: 100%;
-            background: rgba(0,0,0,0.7);
+            background: rgba(0, 0, 0, 0.85);
+            backdrop-filter: blur(4px);
             z-index: 1000;
             align-items: center;
             justify-content: center;
@@ -191,74 +245,119 @@
         }
 
         .modal-content {
-            background: white;
-            border-radius: 20px;
+            background: #18181b;
+            border: 1px solid rgba(63, 63, 70, 0.6);
+            border-radius: 16px;
             padding: 40px;
-            max-width: 700px;
+            max-width: 800px;
             max-height: 90vh;
             overflow-y: auto;
             position: relative;
-            animation: slideIn 0.3s ease;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
         }
 
-        @keyframes slideIn {
-            from {
-                transform: translateY(-50px);
-                opacity: 0;
-            }
-            to {
-                transform: translateY(0);
-                opacity: 1;
-            }
+        .modal-content::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        .modal-content::-webkit-scrollbar-track {
+            background: rgba(24, 24, 27, 0.5);
+            border-radius: 4px;
+        }
+
+        .modal-content::-webkit-scrollbar-thumb {
+            background: rgba(56, 189, 248, 0.3);
+            border-radius: 4px;
+        }
+
+        .modal-content::-webkit-scrollbar-thumb:hover {
+            background: rgba(56, 189, 248, 0.5);
         }
 
         .close-btn {
             position: absolute;
             top: 20px;
             right: 20px;
-            background: #f0f0f0;
-            border: none;
-            width: 35px;
-            height: 35px;
-            border-radius: 50%;
+            background: rgba(63, 63, 70, 0.5);
+            border: 1px solid rgba(82, 82, 91, 0.3);
+            width: 36px;
+            height: 36px;
+            border-radius: 8px;
             cursor: pointer;
-            font-size: 1.5em;
-            color: #666;
-            transition: all 0.3s ease;
+            font-size: 1.3em;
+            color: #a1a1aa;
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
 
         .close-btn:hover {
-            background: #e0e0e0;
-            transform: rotate(90deg);
+            background: rgba(239, 68, 68, 0.2);
+            border-color: rgba(239, 68, 68, 0.4);
+            color: #f87171;
         }
 
         .modal-header {
             display: flex;
-            align-items: center;
-            gap: 15px;
-            margin-bottom: 20px;
+            align-items: flex-start;
+            gap: 20px;
+            margin-bottom: 30px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid rgba(63, 63, 70, 0.4);
         }
 
-        .objectives, .hints {
-            background: #f8f9fa;
-            padding: 20px;
+        .modal-header h2 {
+            font-size: 1.8em;
+            margin-bottom: 10px;
+            color: #f4f4f5;
+        }
+
+        .modal-desc {
+            font-size: 1.05em;
+            color: #a1a1aa;
+            margin-bottom: 30px;
+            line-height: 1.7;
+        }
+
+        .section {
+            background: rgba(24, 24, 27, 0.4);
+            padding: 24px;
             border-radius: 10px;
             margin: 20px 0;
+            border: 1px solid rgba(63, 63, 70, 0.3);
         }
 
-        .objectives h3, .hints h3 {
-            color: #667eea;
-            margin-bottom: 10px;
+        .section h3 {
+            color: #38bdf8;
+            margin-bottom: 16px;
+            font-size: 1.1em;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 8px;
         }
 
-        .objectives ul, .hints ul {
+        .section ul {
             margin-left: 20px;
-            line-height: 1.8;
+            color: #d4d4d8;
+        }
+
+        .section li {
+            margin-bottom: 10px;
+            padding-left: 8px;
+        }
+
+        footer {
+            text-align: center;
+            padding: 40px 0;
+            color: #71717a;
+            border-top: 1px solid rgba(63, 63, 70, 0.3);
         }
 
         @media (max-width: 768px) {
             h1 {
-                font-size: 2em;
+                font-size: 1.8em;
             }
             
             .exercises-grid {
@@ -268,24 +367,52 @@
             .modal-content {
                 padding: 25px;
             }
+
+            .stats {
+                flex-direction: column;
+                gap: 10px;
+            }
+
+            .header-content {
+                flex-direction: column;
+                gap: 20px;
+                align-items: flex-start;
+            }
         }
     </style>
 </head>
 <body>
-    <div class="container">
-        <header>
-            <h1>🤖 Exercices mBot</h1>
-            <p class="subtitle">Programmation avec mBlock - 30 défis progressifs</p>
-        </header>
+    <header>
+        <div class="container">
+            <div class="header-content">
+                <div class="logo">mBlock<span>.Training</span></div>
+                <div class="stats">
+                    <div class="stat-item"><span>30</span> Exercices</div>
+                    <div class="stat-item"><span>3</span> Niveaux</div>
+                    <div class="stat-item"><span>mBot</span> Platform</div>
+                </div>
+            </div>
+        </div>
+    </header>
 
-        <div class="filters">
-            <button class="filter-btn active" data-filter="tous">Tous</button>
-            <button class="filter-btn" data-filter="debutant">Débutant</button>
-            <button class="filter-btn" data-filter="intermediaire">Intermédiaire</button>
-            <button class="filter-btn" data-filter="avance">Avancé</button>
+    <div class="container">
+        <div class="hero">
+            <h1>Programme d'entraînement mBot</h1>
+            <p class="subtitle">Développez vos compétences en robotique et programmation avec notre série d'exercices progressifs</p>
+
+            <div class="filters">
+                <button class="filter-btn active" data-filter="tous">Tous les exercices</button>
+                <button class="filter-btn" data-filter="debutant">Débutant</button>
+                <button class="filter-btn" data-filter="intermediaire">Intermédiaire</button>
+                <button class="filter-btn" data-filter="avance">Avancé</button>
+            </div>
         </div>
 
         <div class="exercises-grid" id="exercisesGrid"></div>
+
+        <footer>
+            <p>mBlock Training Platform © 2026 | Plateforme d'apprentissage pour robots mBot</p>
+        </footer>
     </div>
 
     <div class="modal" id="modal">
@@ -584,8 +711,8 @@
                 
                 card.innerHTML = `
                     <div class="exercise-header">
-                        <div class="exercise-number">${exercise.number}</div>
-                        <div class="difficulty ${exercise.difficulty}">${exercise.difficulty.charAt(0).toUpperCase() + exercise.difficulty.slice(1)}</div>
+                        <div class="exercise-number">EX_${String(exercise.number).padStart(2, '0')}</div>
+                        <div class="difficulty ${exercise.difficulty}">${exercise.difficulty}</div>
                     </div>
                     <h3 class="exercise-title">${exercise.title}</h3>
                     <p class="exercise-description">${exercise.description}</p>
@@ -604,31 +731,34 @@
             
             content.innerHTML = `
                 <div class="modal-header">
-                    <div class="exercise-number">${exercise.number}</div>
                     <div>
-                        <h2 style="margin-bottom: 5px;">${exercise.title}</h2>
-                        <span class="difficulty ${exercise.difficulty}">${exercise.difficulty.charAt(0).toUpperCase() + exercise.difficulty.slice(1)}</span>
+                        <div style="color: #38bdf8; font-family: 'Courier New', monospace; font-size: 0.9em; margin-bottom: 8px;">EXERCICE_${String(exercise.number).padStart(2, '0')}</div>
+                        <h2>${exercise.title}</h2>
+                        <span class="difficulty ${exercise.difficulty}">${exercise.difficulty}</span>
                     </div>
                 </div>
                 
-                <p style="font-size: 1.1em; margin: 20px 0; color: #333;">${exercise.description}</p>
+                <p class="modal-desc">${exercise.description}</p>
                 
-                <div class="objectives">
-                    <h3>🎯 Objectifs pédagogiques</h3>
+                <div class="section">
+                    <h3>→ Objectifs pédagogiques</h3>
                     <ul>
                         ${exercise.objectives.map(obj => `<li>${obj}</li>`).join('')}
                     </ul>
                 </div>
                 
-                <div class="hints">
-                    <h3>💡 Indices et conseils</h3>
+                <div class="section">
+                    <h3>→ Indices et conseils</h3>
                     <ul>
                         ${exercise.hints.map(hint => `<li>${hint}</li>`).join('')}
                     </ul>
                 </div>
                 
-                <div style="margin-top: 20px;">
-                    <strong>Tags :</strong> ${exercise.tags.map(tag => `<span class="tag">${tag}</span>`).join(' ')}
+                <div style="margin-top: 30px; padding-top: 20px; border-top: 1px solid rgba(63, 63, 70, 0.4);">
+                    <div style="color: #71717a; font-size: 0.9em; margin-bottom: 10px;">TAGS</div>
+                    <div class="exercise-tags">
+                        ${exercise.tags.map(tag => `<span class="tag">${tag}</span>`).join(' ')}
+                    </div>
                 </div>
             `;
             
