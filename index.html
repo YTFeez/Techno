@@ -1,0 +1,657 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Exercices mBot - Programmation avec mBlock</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        header {
+            text-align: center;
+            color: white;
+            padding: 40px 20px;
+            margin-bottom: 30px;
+        }
+
+        h1 {
+            font-size: 3em;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+
+        .subtitle {
+            font-size: 1.2em;
+            opacity: 0.9;
+        }
+
+        .filters {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin-bottom: 30px;
+            flex-wrap: wrap;
+        }
+
+        .filter-btn {
+            padding: 12px 25px;
+            border: none;
+            border-radius: 25px;
+            background: white;
+            color: #667eea;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+
+        .filter-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 12px rgba(0,0,0,0.2);
+        }
+
+        .filter-btn.active {
+            background: #764ba2;
+            color: white;
+        }
+
+        .exercises-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+            gap: 25px;
+            margin-bottom: 40px;
+        }
+
+        .exercise-card {
+            background: white;
+            border-radius: 15px;
+            padding: 25px;
+            box-shadow: 0 8px 16px rgba(0,0,0,0.1);
+            transition: all 0.3s ease;
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .exercise-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 5px;
+            height: 100%;
+            background: linear-gradient(180deg, #667eea 0%, #764ba2 100%);
+        }
+
+        .exercise-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 12px 24px rgba(0,0,0,0.2);
+        }
+
+        .exercise-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: start;
+            margin-bottom: 15px;
+        }
+
+        .exercise-number {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 1.1em;
+        }
+
+        .difficulty {
+            padding: 6px 15px;
+            border-radius: 20px;
+            font-size: 0.85em;
+            font-weight: bold;
+        }
+
+        .difficulty.debutant {
+            background: #d4edda;
+            color: #155724;
+        }
+
+        .difficulty.intermediaire {
+            background: #fff3cd;
+            color: #856404;
+        }
+
+        .difficulty.avance {
+            background: #f8d7da;
+            color: #721c24;
+        }
+
+        .exercise-title {
+            font-size: 1.3em;
+            margin: 15px 0 10px 0;
+            color: #333;
+        }
+
+        .exercise-description {
+            color: #666;
+            line-height: 1.6;
+            margin-bottom: 15px;
+        }
+
+        .exercise-tags {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+
+        .tag {
+            background: #f0f0f0;
+            padding: 5px 12px;
+            border-radius: 15px;
+            font-size: 0.85em;
+            color: #555;
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.7);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .modal.active {
+            display: flex;
+        }
+
+        .modal-content {
+            background: white;
+            border-radius: 20px;
+            padding: 40px;
+            max-width: 700px;
+            max-height: 90vh;
+            overflow-y: auto;
+            position: relative;
+            animation: slideIn 0.3s ease;
+        }
+
+        @keyframes slideIn {
+            from {
+                transform: translateY(-50px);
+                opacity: 0;
+            }
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+
+        .close-btn {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background: #f0f0f0;
+            border: none;
+            width: 35px;
+            height: 35px;
+            border-radius: 50%;
+            cursor: pointer;
+            font-size: 1.5em;
+            color: #666;
+            transition: all 0.3s ease;
+        }
+
+        .close-btn:hover {
+            background: #e0e0e0;
+            transform: rotate(90deg);
+        }
+
+        .modal-header {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .objectives, .hints {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 10px;
+            margin: 20px 0;
+        }
+
+        .objectives h3, .hints h3 {
+            color: #667eea;
+            margin-bottom: 10px;
+        }
+
+        .objectives ul, .hints ul {
+            margin-left: 20px;
+            line-height: 1.8;
+        }
+
+        @media (max-width: 768px) {
+            h1 {
+                font-size: 2em;
+            }
+            
+            .exercises-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .modal-content {
+                padding: 25px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>🤖 Exercices mBot</h1>
+            <p class="subtitle">Programmation avec mBlock - 30 défis progressifs</p>
+        </header>
+
+        <div class="filters">
+            <button class="filter-btn active" data-filter="tous">Tous</button>
+            <button class="filter-btn" data-filter="debutant">Débutant</button>
+            <button class="filter-btn" data-filter="intermediaire">Intermédiaire</button>
+            <button class="filter-btn" data-filter="avance">Avancé</button>
+        </div>
+
+        <div class="exercises-grid" id="exercisesGrid"></div>
+    </div>
+
+    <div class="modal" id="modal">
+        <div class="modal-content">
+            <button class="close-btn" onclick="closeModal()">×</button>
+            <div id="modalContent"></div>
+        </div>
+    </div>
+
+    <script>
+        const exercises = [
+            {
+                number: 1,
+                title: "Premier mouvement",
+                difficulty: "debutant",
+                description: "Faire avancer le robot en ligne droite pendant 2 secondes.",
+                objectives: ["Comprendre les blocs de mouvement", "Utiliser les moteurs", "Gérer la durée"],
+                hints: ["Utilise le bloc 'avancer' avec vitesse 100", "Ajoute une pause de 2 secondes", "N'oublie pas d'arrêter les moteurs"],
+                tags: ["Moteurs", "Base"]
+            },
+            {
+                number: 2,
+                title: "Carré parfait",
+                difficulty: "debutant",
+                description: "Programmer le robot pour qu'il dessine un carré en se déplaçant.",
+                objectives: ["Utiliser les rotations", "Créer une boucle", "Coordonner mouvement et rotation"],
+                hints: ["Un carré a 4 côtés égaux", "Chaque angle est de 90°", "Utilise une boucle 'répéter 4 fois'"],
+                tags: ["Moteurs", "Boucles", "Géométrie"]
+            },
+            {
+                number: 3,
+                title: "Feu tricolore",
+                difficulty: "debutant",
+                description: "Créer un système de feux avec les LED RGB : vert (3s), orange (2s), rouge (3s).",
+                objectives: ["Contrôler les LED RGB", "Gérer le timing", "Créer une séquence"],
+                hints: ["Utilise le bloc 'LED RGB'", "Rouge = (255, 0, 0)", "Ajoute des pauses entre chaque couleur"],
+                tags: ["LED", "Séquences"]
+            },
+            {
+                number: 4,
+                title: "Détecteur d'obstacles",
+                difficulty: "debutant",
+                description: "Le robot avance et s'arrête quand il détecte un obstacle à moins de 20 cm.",
+                objectives: ["Utiliser le capteur ultrason", "Créer une condition", "Stopper le mouvement"],
+                hints: ["Capteur ultrason en port 3", "Utilise un bloc 'si... alors'", "Compare la distance avec 20"],
+                tags: ["Capteurs", "Conditions", "Ultrason"]
+            },
+            {
+                number: 5,
+                title: "Suiveur de ligne simple",
+                difficulty: "intermediaire",
+                description: "Programmer le robot pour suivre une ligne noire sur fond blanc.",
+                objectives: ["Utiliser les capteurs de ligne", "Créer une boucle infinie", "Ajuster la direction"],
+                hints: ["Deux capteurs de ligne sous le robot", "Si capteur gauche détecte noir, tourne à gauche", "Utilise une boucle 'répéter indéfiniment'"],
+                tags: ["Capteurs", "Lignes", "Boucles"]
+            },
+            {
+                number: 6,
+                title: "Compteur de sons",
+                difficulty: "debutant",
+                description: "Le robot émet un bip différent à chaque fois qu'il détecte un son fort.",
+                objectives: ["Utiliser le capteur sonore", "Créer un compteur", "Jouer des notes"],
+                hints: ["Crée une variable 'compteur'", "Détecte quand le son > seuil", "Change la note à chaque détection"],
+                tags: ["Capteurs", "Son", "Variables"]
+            },
+            {
+                number: 7,
+                title: "Danse du robot",
+                difficulty: "intermediaire",
+                description: "Créer une chorégraphie : avancer, reculer, tourner, avec des LED synchronisées.",
+                objectives: ["Combiner mouvements", "Synchroniser LED et moteurs", "Créer une séquence artistique"],
+                hints: ["Alterne les couleurs avec les mouvements", "Utilise des rotations variées", "Ajoute du rythme avec les pauses"],
+                tags: ["Moteurs", "LED", "Créativité"]
+            },
+            {
+                number: 8,
+                title: "Évitement intelligent",
+                difficulty: "intermediaire",
+                description: "Le robot avance, détecte les obstacles et les contourne automatiquement.",
+                objectives: ["Détecter les obstacles", "Décider de la direction", "Reprendre l'avancement"],
+                hints: ["Si obstacle à gauche, tourne à droite", "Après évitement, reprend ligne droite", "Teste plusieurs distances"],
+                tags: ["Capteurs", "Logique", "Autonomie"]
+            },
+            {
+                number: 9,
+                title: "Télécommande infrarouge",
+                difficulty: "intermediaire",
+                description: "Contrôler le robot avec une télécommande IR : avancer, reculer, tourner, arrêter.",
+                objectives: ["Recevoir signaux IR", "Associer commandes aux actions", "Gérer plusieurs cas"],
+                hints: ["Chaque bouton a un code unique", "Utilise 'si... alors... sinon si'", "Teste chaque bouton individuellement"],
+                tags: ["Télécommande", "IR", "Contrôle"]
+            },
+            {
+                number: 10,
+                title: "Labyrinthe simple",
+                difficulty: "intermediaire",
+                description: "Le robot traverse un labyrinthe en suivant le mur de droite.",
+                objectives: ["Algorithme du mur", "Utiliser capteurs en continu", "Naviguer automatiquement"],
+                hints: ["Toujours garder le mur à droite", "Si pas de mur à droite, tourne à droite", "Si mur devant, tourne à gauche"],
+                tags: ["Algorithmes", "Navigation", "Capteurs"]
+            },
+            {
+                number: 11,
+                title: "Indicateur de température",
+                difficulty: "debutant",
+                description: "Afficher la température avec des LED : bleu (froid), vert (normal), rouge (chaud).",
+                objectives: ["Lire le capteur de température", "Créer des seuils", "Afficher visuellement"],
+                hints: ["< 20°C = bleu", "20-25°C = vert", "> 25°C = rouge"],
+                tags: ["Capteurs", "LED", "Conditions"]
+            },
+            {
+                number: 12,
+                title: "Course chronométrée",
+                difficulty: "intermediaire",
+                description: "Le robot parcourt une distance donnée et affiche le temps mis sur l'écran.",
+                objectives: ["Mesurer le temps", "Parcourir une distance", "Afficher des données"],
+                hints: ["Utilise une variable 'chrono'", "Démarre le chrono au départ", "Arrête-le à l'arrivée"],
+                tags: ["Temps", "Variables", "Affichage"]
+            },
+            {
+                number: 13,
+                title: "Alarme de recul",
+                difficulty: "debutant",
+                description: "Comme un camion : plus le robot se rapproche d'un obstacle, plus les bips sont rapides.",
+                objectives: ["Mesurer la distance", "Adapter la fréquence", "Créer un son progressif"],
+                hints: ["Distance proche = pause courte", "Distance loin = pause longue", "Utilise une boucle continue"],
+                tags: ["Son", "Capteurs", "Feedback"]
+            },
+            {
+                number: 14,
+                title: "Slalom",
+                difficulty: "intermediaire",
+                description: "Le robot zigzague entre des obstacles détectés automatiquement.",
+                objectives: ["Détecter plusieurs obstacles", "Alterner les directions", "Maintenir une trajectoire"],
+                hints: ["Détecte obstacle, tourne d'un côté", "Après avoir passé, tourne de l'autre", "Alterne gauche/droite"],
+                tags: ["Navigation", "Capteurs", "Moteurs"]
+            },
+            {
+                number: 15,
+                title: "Jeu de lumière musical",
+                difficulty: "intermediaire",
+                description: "Créer un spectacle lumineux synchronisé avec une mélodie programmée.",
+                objectives: ["Composer une mélodie", "Synchroniser avec les LED", "Créer un effet visuel"],
+                hints: ["Chaque note = une couleur", "Utilise des boucles pour répéter", "Varie l'intensité"],
+                tags: ["LED", "Son", "Créativité"]
+            },
+            {
+                number: 16,
+                title: "Parking automatique",
+                difficulty: "avance",
+                description: "Le robot détecte un espace libre et se gare automatiquement en créneau.",
+                objectives: ["Détecter l'espace", "Calculer la manœuvre", "Exécuter le créneau"],
+                hints: ["Avance jusqu'à détecter un espace", "Recule en tournant", "Ajuste la position finale"],
+                tags: ["Navigation", "Algorithmes", "Précision"]
+            },
+            {
+                number: 17,
+                title: "Explorateur de pièce",
+                difficulty: "avance",
+                description: "Le robot explore une pièce en évitant les obstacles et mémorise le parcours.",
+                objectives: ["Navigation autonome", "Mémorisation du chemin", "Optimisation du parcours"],
+                hints: ["Utilise des variables pour mémoriser", "Change de direction aléatoirement", "Évite les zones déjà visitées"],
+                tags: ["Exploration", "Mémoire", "Variables"]
+            },
+            {
+                number: 18,
+                title: "Suiveur de main",
+                difficulty: "intermediaire",
+                description: "Le robot suit votre main en utilisant le capteur ultrason pour maintenir une distance constante.",
+                objectives: ["Maintenir une distance fixe", "Ajuster la vitesse", "Réagir en temps réel"],
+                hints: ["Distance cible = 15 cm", "Si trop loin, avance", "Si trop près, recule"],
+                tags: ["Capteurs", "Suivi", "Régulation"]
+            },
+            {
+                number: 19,
+                title: "Code secret",
+                difficulty: "intermediaire",
+                description: "Déverrouiller le robot avec une séquence de battements de mains détectés par le capteur son.",
+                objectives: ["Détecter une séquence", "Mémoriser les entrées", "Valider le code"],
+                hints: ["Ex : 3 battements rapides", "Compte le nombre de sons", "Vérifie le timing entre les sons"],
+                tags: ["Son", "Logique", "Sécurité"]
+            },
+            {
+                number: 20,
+                title: "Combat de robots",
+                difficulty: "avance",
+                description: "Deux robots s'affrontent : celui qui pousse l'autre hors de la zone gagne.",
+                objectives: ["Détecter l'adversaire", "Stratégie d'attaque", "Rester dans la zone"],
+                hints: ["Détecte l'adversaire avec l'ultrason", "Fonce vers lui", "Utilise les capteurs de ligne pour la zone"],
+                tags: ["Compétition", "Stratégie", "Multi-robot"]
+            },
+            {
+                number: 21,
+                title: "Dessin libre",
+                difficulty: "intermediaire",
+                description: "Programmer le robot pour dessiner une forme complexe de ton choix (étoile, spirale, etc.).",
+                objectives: ["Planifier une trajectoire", "Combiner mouvements", "Créer une forme artistique"],
+                hints: ["Décompose la forme en segments", "Calcule les angles nécessaires", "Teste et ajuste"],
+                tags: ["Géométrie", "Créativité", "Moteurs"]
+            },
+            {
+                number: 22,
+                title: "Station météo",
+                difficulty: "avance",
+                description: "Le robot mesure température, luminosité et son ambiant, puis les affiche.",
+                objectives: ["Lire plusieurs capteurs", "Organiser les données", "Affichage multi-informations"],
+                hints: ["Crée une variable par mesure", "Actualise régulièrement", "Formate l'affichage clairement"],
+                tags: ["Capteurs", "Données", "Affichage"]
+            },
+            {
+                number: 23,
+                title: "Gardien de porte",
+                difficulty: "intermediaire",
+                description: "Le robot surveille une entrée et déclenche une alarme si quelqu'un passe.",
+                objectives: ["Surveillance continue", "Détection de mouvement", "Alarme sonore et visuelle"],
+                hints: ["Mesure la distance en continu", "Si changement brusque = détection", "Active LED rouge + son"],
+                tags: ["Sécurité", "Surveillance", "Alarme"]
+            },
+            {
+                number: 24,
+                title: "Tri de couleurs",
+                difficulty: "avance",
+                description: "Avec un capteur de couleur additionnel, le robot trie des objets par couleur.",
+                objectives: ["Détecter les couleurs", "Prendre des décisions", "Organiser les objets"],
+                hints: ["Approche l'objet", "Scanne la couleur", "Déplace vers la zone correspondante"],
+                tags: ["Capteurs", "Tri", "Logique"]
+            },
+            {
+                number: 25,
+                title: "Course de relais",
+                difficulty: "avance",
+                description: "Deux robots se passent le relais en se détectant mutuellement.",
+                objectives: ["Communication entre robots", "Synchronisation", "Passage de témoin"],
+                hints: ["Robot 1 avance vers robot 2", "Robot 2 détecte robot 1", "Robot 2 démarre quand robot 1 s'arrête"],
+                tags: ["Multi-robot", "Coordination", "Compétition"]
+            },
+            {
+                number: 26,
+                title: "Mode économie d'énergie",
+                difficulty: "intermediaire",
+                description: "Le robot se met en veille si aucune activité n'est détectée pendant 30 secondes.",
+                objectives: ["Gérer le temps d'inactivité", "Mode veille", "Réveil automatique"],
+                hints: ["Compte le temps sans détection", "Éteint LED et moteurs en veille", "Réactive au moindre son/mouvement"],
+                tags: ["Gestion", "Temps", "Optimisation"]
+            },
+            {
+                number: 27,
+                title: "Parcours du combattant",
+                difficulty: "avance",
+                description: "Le robot franchit un parcours avec obstacles variés : tunnels, pentes, virages.",
+                objectives: ["Navigation complexe", "Adaptation au terrain", "Robustesse du code"],
+                hints: ["Combine plusieurs stratégies", "Ajuste la vitesse selon l'obstacle", "Teste chaque section séparément"],
+                tags: ["Défi", "Navigation", "Complexité"]
+            },
+            {
+                number: 28,
+                title: "Calcul de trajectoire",
+                difficulty: "avance",
+                description: "Le robot calcule le chemin le plus court entre deux points en évitant des obstacles.",
+                objectives: ["Planification de chemin", "Algorithme d'évitement", "Optimisation"],
+                hints: ["Scanne l'environnement", "Identifie les obstacles", "Calcule plusieurs routes possibles"],
+                tags: ["Algorithmes", "Mathématiques", "IA"]
+            },
+            {
+                number: 29,
+                title: "Simulateur d'émotions",
+                difficulty: "intermediaire",
+                description: "Le robot exprime des émotions via LED, sons et mouvements selon les interactions.",
+                objectives: ["Associer stimuli et réactions", "Créer des comportements", "Personnalité du robot"],
+                hints: ["Heureux : LED vertes + son joyeux", "Triste : LED bleues + son grave", "Surpris : LED clignotantes"],
+                tags: ["Créativité", "Comportement", "Interaction"]
+            },
+            {
+                number: 30,
+                title: "Projet libre avancé",
+                difficulty: "avance",
+                description: "Invente ton propre projet complexe combinant au moins 4 fonctionnalités différentes.",
+                objectives: ["Créativité totale", "Intégration de compétences", "Projet abouti"],
+                hints: ["Commence par un plan", "Intègre progressivement les fonctions", "Teste et améliore continuellement"],
+                tags: ["Projet", "Synthèse", "Innovation"]
+            }
+        ];
+
+        function renderExercises(filter = 'tous') {
+            const grid = document.getElementById('exercisesGrid');
+            grid.innerHTML = '';
+            
+            const filtered = filter === 'tous' 
+                ? exercises 
+                : exercises.filter(ex => ex.difficulty === filter);
+            
+            filtered.forEach(exercise => {
+                const card = document.createElement('div');
+                card.className = 'exercise-card';
+                card.onclick = () => openModal(exercise);
+                
+                card.innerHTML = `
+                    <div class="exercise-header">
+                        <div class="exercise-number">${exercise.number}</div>
+                        <div class="difficulty ${exercise.difficulty}">${exercise.difficulty.charAt(0).toUpperCase() + exercise.difficulty.slice(1)}</div>
+                    </div>
+                    <h3 class="exercise-title">${exercise.title}</h3>
+                    <p class="exercise-description">${exercise.description}</p>
+                    <div class="exercise-tags">
+                        ${exercise.tags.map(tag => `<span class="tag">${tag}</span>`).join('')}
+                    </div>
+                `;
+                
+                grid.appendChild(card);
+            });
+        }
+
+        function openModal(exercise) {
+            const modal = document.getElementById('modal');
+            const content = document.getElementById('modalContent');
+            
+            content.innerHTML = `
+                <div class="modal-header">
+                    <div class="exercise-number">${exercise.number}</div>
+                    <div>
+                        <h2 style="margin-bottom: 5px;">${exercise.title}</h2>
+                        <span class="difficulty ${exercise.difficulty}">${exercise.difficulty.charAt(0).toUpperCase() + exercise.difficulty.slice(1)}</span>
+                    </div>
+                </div>
+                
+                <p style="font-size: 1.1em; margin: 20px 0; color: #333;">${exercise.description}</p>
+                
+                <div class="objectives">
+                    <h3>🎯 Objectifs pédagogiques</h3>
+                    <ul>
+                        ${exercise.objectives.map(obj => `<li>${obj}</li>`).join('')}
+                    </ul>
+                </div>
+                
+                <div class="hints">
+                    <h3>💡 Indices et conseils</h3>
+                    <ul>
+                        ${exercise.hints.map(hint => `<li>${hint}</li>`).join('')}
+                    </ul>
+                </div>
+                
+                <div style="margin-top: 20px;">
+                    <strong>Tags :</strong> ${exercise.tags.map(tag => `<span class="tag">${tag}</span>`).join(' ')}
+                </div>
+            `;
+            
+            modal.classList.add('active');
+        }
+
+        function closeModal() {
+            document.getElementById('modal').classList.remove('active');
+        }
+
+        document.querySelectorAll('.filter-btn').forEach(btn => {
+            btn.addEventListener('click', function() {
+                document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+                this.classList.add('active');
+                renderExercises(this.dataset.filter);
+            });
+        });
+
+        document.getElementById('modal').addEventListener('click', function(e) {
+            if (e.target === this) closeModal();
+        });
+
+        renderExercises();
+    </script>
+</body>
+</html>
